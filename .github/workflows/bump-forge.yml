@@ -18,9 +18,10 @@ jobs:
 
 
       - name: Get latest Forge version
+        id: latest_forge_version
         run: |
           curl -s 'https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json' | \
-          jq --raw-output '"::set-output name=forge_version::"+.promos["1.17.1-latest"]'
+          jq --raw-output '"::set-output name=value::"+.promos["1.17.1-latest"]'
         
       - name: Get declared Forge version
         id: properties_forge_version
@@ -30,15 +31,15 @@ jobs:
           property: FORGE_VERSION
 
       - name: Update Forge version
-        if: ${{ outputs.forge_version != steps.properties_forge_version.outputs.value }}
+        if: ${{ steps.latest_forge_version.outputs.value != steps.properties_forge_version.outputs.value }}
         uses: christian-draeger/write-properties@1.0.1
         with:
           path: ./build.properties
           property: FORGE_VERSION
-          value: ${{ outputs.forge_version }}
+          value: ${{ steps.latest_forge_version.outputs.value }}
       
       - name: Commit changes
-        if: ${{ outputs.forge_version != steps.properties_forge_version.outputs.value }}
+        if: ${{ steps.latest_forge_version.outputs.value != steps.properties_forge_version.outputs.value }}
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -50,7 +51,7 @@ jobs:
           "
 
       - name: Push changes
-        if: ${{ outputs.forge_version != steps.properties_forge_version.outputs.value }}
+        if: ${{ steps.latest_forge_version.outputs.value != steps.properties_forge_version.outputs.value }}
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
