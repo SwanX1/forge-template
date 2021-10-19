@@ -111,7 +111,7 @@ publishing {
           }
         }
         scm {
-          connection = config.SCM_CONNETION
+          connection = config.SCM_CONNECTION
           url = config.SCM_URL
         }
       }
