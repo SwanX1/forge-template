@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
-          persist-credentials: false
+          persist-credentials: false  
           fetch-depth: 0
 
 
@@ -21,7 +21,7 @@ jobs:
         id: latest_forge_version
         run: |
           curl -s 'https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json' | \
-          jq --raw-output '"::set-output name=value::"+.promos["1.17.1-latest"]'
+          jq --raw-output '"::set-output name=value::"+.promos["1.18-latest"]'
         
       - name: Get declared Forge version
         id: properties_forge_version
@@ -46,7 +46,7 @@ jobs:
           git add build.properties
           git commit --verbose -m "chore: Updated Forge version
 
-          This is an automated commit. It is made by a GitHub workflow.
+          This is an automated commit. It was made by a GitHub workflow.
           Action: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
           "
 
